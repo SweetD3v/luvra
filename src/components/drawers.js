@@ -811,6 +811,9 @@
     });
     renderCart();
     initAgeGate();
+    if (Luvra.initThemedSelects) {
+      Luvra.initThemedSelects();
+    }
 
     return {
       openCart,
@@ -818,5 +821,283 @@
       openSearch,
       closeAllOverlays,
     };
+  };
+
+  function closeAllThemedSelects(exceptWrapper) {
+    if (!document.querySelectorAll) return;
+    document.querySelectorAll('.luvra-select.is-open').forEach((wrap) => {
+      if (wrap === exceptWrapper) return;
+      wrap.classList.remove('is-open', 'is-dropup');
+      const trig = wrap.querySelector('.luvra-select__trigger');
+      if (trig) trig.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  Luvra.enhanceThemedSelects = function enhanceThemedSelects(root) {
+    const scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+    if (!scope || typeof scope.querySelectorAll !== 'function' || !document.createElement) return;
+
+    scope.querySelectorAll('select').forEach((nativeSelect) => {
+      if (nativeSelect.dataset.luvraSelectEnhanced === 'true') return;
+      const parent = nativeSelect.parentNode;
+      if (!parent || typeof parent.insertBefore !== 'function') return;
+
+      nativeSelect.dataset.luvraSelectEnhanced = 'true';
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'luvra-select';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'luvra-select__trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (nativeSelect.id) {
+        trigger.id = `${nativeSelect.id}--trigger`;
+      }
+
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'luvra-select__label';
+
+      const chevron = document.createElementNS
+        ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        : document.createElement('span');
+      if (chevron.setAttribute) {
+        chevron.setAttribute('class', 'luvra-select__chevron');
+        chevron.setAttribute('width', '12');
+        chevron.setAttribute('height', '12');
+        chevron.setAttribute('viewBox', '0 0 24 24');
+        chevron.setAttribute('fill', 'none');
+        chevron.setAttribute('stroke', 'currentColor');
+        chevron.setAttribute('stroke-width', '2');
+        chevron.setAttribute('stroke-linecap', 'round');
+        chevron.setAttribute('stroke-linejoin', 'round');
+        chevron.setAttribute('aria-hidden', 'true');
+        chevron.innerHTML = '<path d="m6 9 6 6 6-6" />';
+      }
+
+      trigger.appendChild(labelSpan);
+      trigger.appendChild(chevron);
+
+      const backdrop = document.createElement('div');
+      backdrop.className = 'luvra-select__backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+
+      const menu = document.createElement('div');
+      menu.className = 'luvra-select__menu';
+      menu.setAttribute('role', 'listbox');
+      menu.tabIndex = -1;
+
+      function syncOptions() {
+        const opts = Array.from(nativeSelect.options || []);
+        const selectedOpt =
+          opts[nativeSelect.selectedIndex] || opts.find((o) => o.selected) || opts[0];
+        labelSpan.textContent = selectedOpt ? selectedOpt.textContent : '';
+        if (nativeSelect.hasAttribute('aria-invalid')) {
+          trigger.setAttribute('aria-invalid', nativeSelect.getAttribute('aria-invalid'));
+        } else {
+          trigger.removeAttribute('aria-invalid');
+        }
+        menu.innerHTML = '';
+
+        opts.forEach((opt, idx) => {
+          const optBtn = document.createElement('button');
+          optBtn.type = 'button';
+          optBtn.className = 'luvra-select__option';
+          optBtn.setAttribute('role', 'option');
+          optBtn.dataset.value = opt.value;
+          optBtn.dataset.index = String(idx);
+          const isSelected = opt.value === nativeSelect.value;
+          optBtn.setAttribute('aria-selected', String(isSelected));
+          if (isSelected) optBtn.classList.add('is-selected');
+          optBtn.disabled = Boolean(opt.disabled);
+
+          const textSpan = document.createElement('span');
+          textSpan.textContent = opt.textContent;
+
+          const checkSvg = document.createElementNS
+            ? document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+            : document.createElement('span');
+          if (checkSvg.setAttribute) {
+            checkSvg.setAttribute('class', 'luvra-select__check');
+            checkSvg.setAttribute('width', '13');
+            checkSvg.setAttribute('height', '13');
+            checkSvg.setAttribute('viewBox', '0 0 24 24');
+            checkSvg.setAttribute('fill', 'none');
+            checkSvg.setAttribute('stroke', 'currentColor');
+            checkSvg.setAttribute('stroke-width', '2.2');
+            checkSvg.setAttribute('stroke-linecap', 'round');
+            checkSvg.setAttribute('stroke-linejoin', 'round');
+            checkSvg.setAttribute('aria-hidden', 'true');
+            checkSvg.innerHTML = '<path d="M20 6 9 17l-5-5" />';
+          }
+
+          optBtn.appendChild(textSpan);
+          optBtn.appendChild(checkSvg);
+          menu.appendChild(optBtn);
+        });
+      }
+
+      function openMenu() {
+        closeAllThemedSelects(wrapper);
+        syncOptions();
+        if (typeof trigger.getBoundingClientRect === 'function' && global.innerHeight) {
+          const rect = trigger.getBoundingClientRect();
+          const spaceBelow = global.innerHeight - rect.bottom;
+          if (spaceBelow < 240 && rect.top > 240) {
+            wrapper.classList.add('is-dropup');
+          } else {
+            wrapper.classList.remove('is-dropup');
+          }
+        }
+        wrapper.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+        const activeBtn =
+          menu.querySelector('.luvra-select__option.is-selected') ||
+          menu.querySelector('.luvra-select__option');
+        if (activeBtn && typeof activeBtn.focus === 'function') {
+          global.setTimeout(() => activeBtn.focus(), 10);
+        }
+      }
+
+      function closeMenu(returnFocus) {
+        if (!wrapper.classList.contains('is-open')) return;
+        wrapper.classList.remove('is-open', 'is-dropup');
+        trigger.setAttribute('aria-expanded', 'false');
+        if (returnFocus && typeof trigger.focus === 'function') {
+          trigger.focus();
+        }
+      }
+
+      function selectValue(val) {
+        const changed = nativeSelect.value !== val;
+        nativeSelect.value = val;
+        syncOptions();
+        closeMenu(true);
+        if (changed && typeof global.Event === 'function') {
+          nativeSelect.dispatchEvent(new global.Event('change', { bubbles: true }));
+        }
+      }
+
+      parent.insertBefore(wrapper, nativeSelect);
+      wrapper.appendChild(nativeSelect);
+      wrapper.appendChild(trigger);
+      wrapper.appendChild(backdrop);
+      wrapper.appendChild(menu);
+
+      nativeSelect.classList.add('luvra-select-native');
+      nativeSelect.tabIndex = -1;
+      nativeSelect.setAttribute('aria-hidden', 'true');
+      syncOptions();
+
+      if (nativeSelect.id && document.querySelector) {
+        const assocLabel = document.querySelector(`label[for="${nativeSelect.id}"]`);
+        if (assocLabel && assocLabel.dataset.luvraLabelBound !== 'true') {
+          assocLabel.dataset.luvraLabelBound = 'true';
+          assocLabel.addEventListener('click', (e) => {
+            e.preventDefault();
+            openMenu();
+          });
+        }
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (wrapper.classList.contains('is-open')) {
+          closeMenu(true);
+        } else {
+          openMenu();
+        }
+      });
+
+      backdrop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeMenu(true);
+      });
+
+      menu.addEventListener('click', (e) => {
+        const optBtn = e.target.closest('.luvra-select__option');
+        if (!optBtn || optBtn.disabled) return;
+        e.stopPropagation();
+        selectValue(optBtn.dataset.value);
+      });
+
+      wrapper.addEventListener('keydown', (e) => {
+        const optionBtns = Array.from(menu.querySelectorAll('.luvra-select__option:not([disabled])'));
+        if (!optionBtns.length) return;
+        const isOpen = wrapper.classList.contains('is-open');
+
+        if (e.key === 'Escape') {
+          if (isOpen) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMenu(true);
+          }
+          return;
+        }
+
+        if (!isOpen && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === ' ' || e.key === 'Enter')) {
+          e.preventDefault();
+          openMenu();
+          return;
+        }
+
+        if (!isOpen) return;
+        const curIdx = optionBtns.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const next = optionBtns[curIdx < optionBtns.length - 1 ? curIdx + 1 : 0];
+          if (next) next.focus();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          const prev = optionBtns[curIdx > 0 ? curIdx - 1 : optionBtns.length - 1];
+          if (prev) prev.focus();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          optionBtns[0].focus();
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          optionBtns[optionBtns.length - 1].focus();
+        } else if ((e.key === 'Enter' || e.key === ' ') && curIdx >= 0) {
+          e.preventDefault();
+          selectValue(optionBtns[curIdx].dataset.value);
+        }
+      });
+
+      nativeSelect.addEventListener('change', syncOptions);
+      nativeSelect.addEventListener('luvra:select-sync', syncOptions);
+    });
+  };
+
+  let themedSelectObserverStarted = false;
+  Luvra.initThemedSelects = function initThemedSelects() {
+    Luvra.enhanceThemedSelects(document);
+    if (themedSelectObserverStarted) return;
+    themedSelectObserverStarted = true;
+
+    document.addEventListener('click', (e) => {
+      if (!e.target || typeof e.target.closest !== 'function' || !e.target.closest('.luvra-select')) {
+        closeAllThemedSelects(null);
+      }
+    });
+
+    if (typeof global.MutationObserver === 'function' && document.body) {
+      const obs = new global.MutationObserver((mutations) => {
+        for (const m of mutations) {
+          if (m.addedNodes && m.addedNodes.length) {
+            m.addedNodes.forEach((node) => {
+              if (node && node.nodeType === 1) {
+                if (node.tagName === 'SELECT') {
+                  Luvra.enhanceThemedSelects(node.parentNode || document);
+                } else if (typeof node.querySelector === 'function' && node.querySelector('select')) {
+                  Luvra.enhanceThemedSelects(node);
+                }
+              }
+            });
+          }
+        }
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+    }
   };
 })(window);

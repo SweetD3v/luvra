@@ -39,6 +39,12 @@
   inset: 0;
   z-index: 1;
   background-color: #0b0a0c;
+  animation: luvraHeroMediaFade 1050ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes luvraHeroMediaFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .hero__img {
@@ -98,6 +104,39 @@
   z-index: 4;
   padding-block: 4.5rem;
   max-width: 540px;
+}
+
+.hero__content > * {
+  opacity: 0;
+  transform: translateY(34px);
+  animation: luvraHeroEntrance 950ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero__content > *:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.hero__content > *:nth-child(2) {
+  animation-delay: 210ms;
+}
+
+.hero__content > *:nth-child(3) {
+  animation-delay: 340ms;
+}
+
+.hero__content > *:nth-child(4) {
+  animation-delay: 460ms;
+}
+
+@keyframes luvraHeroEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(34px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero__title {
@@ -354,6 +393,25 @@
   background-color: var(--burgundy);
   border-color: var(--burgundy-border);
   color: var(--text-primary);
+}
+
+.filter-pill:active,
+.newsletter-form__submit:active {
+  transform: scale(0.96);
+  background-color: #461925;
+  border-color: var(--gold);
+  color: var(--text-primary);
+}
+
+.arsenal-card:active,
+.desire-tile:active {
+  transform: scale(0.985);
+  border-color: var(--gold);
+}
+
+.featured-explore-link:active {
+  color: var(--gold-soft);
+  transform: translateY(1px);
 }
 
 .collection-grid {

@@ -52,6 +52,17 @@
   box-shadow: 0 8px 24px rgba(82, 32, 45, 0.45);
 }
 
+.btn:active {
+  transform: scale(0.975);
+}
+
+.btn--primary:active {
+  background-color: #461925;
+  border-color: var(--gold);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4);
+  transform: scale(0.975);
+}
+
 .btn--outline {
   width: 100%;
   padding: 0.72rem 1rem;
@@ -65,6 +76,13 @@
 .btn--outline:hover {
   background-color: var(--burgundy);
   border-color: var(--burgundy-border);
+}
+
+.btn--outline:active {
+  background-color: rgba(82, 32, 45, 0.7);
+  border-color: var(--gold);
+  color: var(--gold-soft);
+  transform: scale(0.98);
 }
 
 .btn--outline.is-added {
@@ -83,13 +101,24 @@
   border: 1px solid var(--border-subtle);
   background-color: var(--bg-card);
   color: var(--text-secondary);
-  transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .btn--icon-circle:hover {
   border-color: var(--border-gold);
   color: var(--text-primary);
   background-color: var(--bg-card-hover);
+}
+
+.btn--icon-circle:active {
+  border-color: var(--gold);
+  color: var(--gold-soft);
+  background-color: rgba(201, 169, 126, 0.14);
+  transform: scale(0.92);
 }
 
 /* Header & Navigation */
@@ -173,6 +202,14 @@
   color: var(--text-primary);
 }
 
+.nav-link:active,
+.nav-dropdown__link:active,
+.mobile-nav__link:active,
+.mobile-nav__sublink:active {
+  color: var(--gold-soft);
+  transform: scale(0.97);
+}
+
 .nav-dropdown {
   position: absolute;
   top: calc(100% + 0.55rem);
@@ -241,6 +278,187 @@
 .cart-trigger:hover {
   border-color: var(--border-gold);
   background-color: var(--bg-card-hover);
+}
+
+.cart-trigger:active {
+  border-color: var(--gold);
+  background-color: rgba(201, 169, 126, 0.14);
+  transform: scale(0.95);
+}
+
+/* Custom Luxury Dropdowns (Replaces System Select Popups) */
+.luvra-select-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.luvra-select {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.catalog-sort .luvra-select {
+  width: auto;
+}
+
+.luvra-select__trigger {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 42px;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  line-height: 1.25;
+  text-align: left;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.catalog-sort .luvra-select__trigger {
+  min-width: 168px;
+  min-height: 38px;
+  padding: 0.48rem 0.95rem 0.48rem 1.1rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-card);
+  font-size: 0.78rem;
+}
+
+.luvra-select__trigger:hover,
+.luvra-select.is-open .luvra-select__trigger {
+  border-color: var(--border-gold);
+  background-color: var(--bg-card-hover);
+}
+
+.luvra-select__trigger:active {
+  transform: scale(0.985);
+  border-color: var(--gold);
+  background-color: rgba(82, 32, 45, 0.28);
+}
+
+.luvra-select__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.luvra-select__chevron {
+  flex-shrink: 0;
+  color: var(--gold);
+  transition: transform var(--transition-fast);
+}
+
+.luvra-select.is-open .luvra-select__chevron {
+  transform: rotate(180deg);
+}
+
+.luvra-select__backdrop {
+  display: none;
+}
+
+.luvra-select__menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 2rem));
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 0.42rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #1a171c 0%, #121014 100%);
+  border: 1px solid var(--border-gold);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transition:
+    opacity 180ms var(--ease-subtle),
+    transform 180ms var(--ease-subtle),
+    visibility 180ms var(--ease-subtle);
+  z-index: 90;
+}
+
+.catalog-sort .luvra-select__menu {
+  left: auto;
+  right: 0;
+  min-width: 210px;
+}
+
+.luvra-select.is-dropup .luvra-select__menu {
+  top: auto;
+  bottom: calc(100% + 0.45rem);
+  transform: translateY(6px) scale(0.98);
+}
+
+.luvra-select.is-open .luvra-select__menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.luvra-select__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.62rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-align: left;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.luvra-select__option:hover,
+.luvra-select__option.is-highlighted {
+  background-color: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.luvra-select__option.is-selected {
+  background-color: var(--bg-wine-tint);
+  color: var(--gold-soft);
+  font-weight: 500;
+}
+
+.luvra-select__option:active {
+  background-color: rgba(82, 32, 45, 0.62);
+  color: var(--text-primary);
+  transform: scale(0.985);
+}
+
+.luvra-select__check {
+  flex-shrink: 0;
+  color: var(--gold);
+  opacity: 0;
+}
+
+.luvra-select__option.is-selected .luvra-select__check {
+  opacity: 1;
 }
 
 .cart-trigger__count {
@@ -455,6 +673,11 @@
   background-color: rgba(82, 32, 45, 0.85);
 }
 
+.product-card__fav:active {
+  transform: scale(0.9);
+  border-color: var(--gold);
+}
+
 .product-card__variants {
   display: flex;
   flex-wrap: wrap;
@@ -503,6 +726,12 @@
   color: var(--gold-soft);
 }
 
+.variant-swatch:active,
+.variant-pill:active {
+  transform: scale(0.94);
+  border-color: var(--gold);
+}
+
 .btn--outline.is-waitlist-btn {
   color: var(--text-secondary);
   border-color: var(--border-subtle);
@@ -531,6 +760,15 @@
 .product-card__quickview:hover {
   border-color: var(--gold);
   color: var(--gold);
+}
+
+.product-card__quickview:active {
+  transform: scale(0.92);
+  background-color: rgba(201, 169, 126, 0.14);
+}
+
+.luvra-select__trigger[aria-invalid='true'] {
+  border-color: rgba(212, 114, 134, 0.85);
 }
 
 /* Backdrop & Drawers / Modals */
@@ -1320,6 +1558,48 @@ main.is-age-gated {
   .product-card__quickview {
     width: 30px;
     height: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .luvra-select.is-open .luvra-select__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(6, 5, 7, 0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 95;
+  }
+
+  .luvra-select__menu {
+    position: fixed;
+    top: auto !important;
+    bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    max-height: 55vh;
+    padding: 0.6rem;
+    border-radius: var(--radius-lg);
+    transform: translateY(18px);
+    z-index: 100;
+  }
+
+  .luvra-select.is-dropup .luvra-select__menu {
+    transform: translateY(18px);
+  }
+
+  .luvra-select.is-open .luvra-select__menu {
+    transform: translateY(0);
+  }
+
+  .luvra-select__option {
+    min-height: 46px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9375rem;
   }
 }
 

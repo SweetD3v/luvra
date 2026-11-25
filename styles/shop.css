@@ -313,6 +313,15 @@
   color: var(--text-muted);
 }
 
+.mobile-filter-btn:active,
+.catalog-search-btn:active,
+.active-chip:active {
+  transform: scale(0.96);
+  border-color: var(--gold);
+  background-color: rgba(82, 32, 45, 0.5);
+  color: var(--text-primary);
+}
+
 .catalog-sort select {
   background-color: var(--bg-card);
   border: 1px solid var(--border-medium);

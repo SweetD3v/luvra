@@ -620,6 +620,9 @@
 
     if (sortSelect) {
       sortSelect.value = filterState.sort;
+      if (typeof global.Event === 'function') {
+        sortSelect.dispatchEvent(new global.Event('luvra:select-sync'));
+      }
       sortSelect.addEventListener('change', (e) => {
         filterState.sort = e.target.value;
         renderAll();

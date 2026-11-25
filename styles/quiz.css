@@ -190,6 +190,12 @@
   color: var(--text-primary);
 }
 
+.quiz-btn-ghost:active:not(:disabled) {
+  transform: scale(0.97);
+  background-color: rgba(201, 169, 126, 0.1);
+  border-color: var(--gold);
+}
+
 .quiz-btn-ghost:disabled {
   opacity: 0.4;
   cursor: not-allowed;
