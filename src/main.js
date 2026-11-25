@@ -196,6 +196,16 @@
       global.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
+    // Subtle flowing silk-crease sheen behind page content on every page
+    if (document.createElement && document.body && !document.querySelector('.luvra-silk-bg')) {
+      const silkBg = document.createElement('div');
+      silkBg.className = 'luvra-silk-bg';
+      silkBg.setAttribute('aria-hidden', 'true');
+      document.body.prepend
+        ? document.body.prepend(silkBg)
+        : document.body.appendChild(silkBg);
+    }
+
     // Gentle ambient pointer glow on fine-pointer (desktop) devices
     const isFinePointer =
       typeof global.matchMedia === 'function' &&

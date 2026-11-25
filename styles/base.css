@@ -33,12 +33,12 @@ body {
   caret-color: transparent;
 }
 
-/* Drifting velvet ambient fog behind content */
+/* Flowing obsidian silk creases & warm specular sheen behind content */
 body::before,
 body::after {
   content: '';
   position: fixed;
-  inset: -18%;
+  inset: -24%;
   pointer-events: none;
   z-index: 0;
   will-change: transform, opacity;
@@ -46,18 +46,61 @@ body::after {
 
 body::before {
   background:
-    radial-gradient(ellipse 46% 36% at 18% 22%, rgba(92, 34, 49, 0.16), transparent 72%),
-    radial-gradient(ellipse 42% 34% at 82% 68%, rgba(201, 169, 126, 0.08), transparent 70%);
-  filter: blur(42px);
+    linear-gradient(
+      118deg,
+      transparent 16%,
+      rgba(74, 28, 42, 0.08) 28%,
+      rgba(201, 169, 126, 0.045) 33%,
+      transparent 40%,
+      rgba(74, 28, 42, 0.07) 58%,
+      rgba(201, 169, 126, 0.04) 63%,
+      transparent 72%
+    );
+  filter: blur(28px);
   animation: luvraFogDriftA 26s ease-in-out infinite alternate;
 }
 
 body::after {
   background:
-    radial-gradient(ellipse 40% 30% at 76% 18%, rgba(82, 32, 45, 0.12), transparent 70%),
-    radial-gradient(ellipse 48% 36% at 28% 82%, rgba(201, 169, 126, 0.06), transparent 72%);
-  filter: blur(52px);
+    linear-gradient(
+      148deg,
+      transparent 22%,
+      rgba(201, 169, 126, 0.032) 34%,
+      rgba(82, 32, 45, 0.075) 42%,
+      transparent 52%,
+      rgba(201, 169, 126, 0.035) 70%,
+      transparent 82%
+    );
+  filter: blur(36px);
   animation: luvraFogDriftB 32s ease-in-out infinite alternate;
+}
+
+.luvra-silk-bg {
+  position: fixed;
+  inset: -16%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform, opacity;
+  background:
+    radial-gradient(ellipse 95% 24% at 28% 32%, rgba(201, 169, 126, 0.055), transparent 68%),
+    radial-gradient(ellipse 85% 20% at 72% 64%, rgba(126, 52, 72, 0.075), transparent 68%),
+    radial-gradient(ellipse 75% 18% at 45% 84%, rgba(201, 169, 126, 0.04), transparent 70%);
+  transform: rotate(-11deg);
+  filter: blur(22px);
+  animation: luvraSilkRipple 28s ease-in-out infinite alternate;
+}
+
+.luvra-silk-bg::after {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  background:
+    radial-gradient(ellipse 90% 14% at 62% 28%, rgba(215, 188, 149, 0.042), transparent 62%),
+    radial-gradient(ellipse 80% 16% at 34% 72%, rgba(92, 34, 49, 0.07), transparent 64%);
+  transform: rotate(22deg);
+  filter: blur(18px);
+  animation: luvraSilkCreaseGlow 22s ease-in-out infinite alternate;
 }
 
 body > header,
@@ -68,15 +111,27 @@ body > footer {
 }
 
 @keyframes luvraFogDriftA {
-  0% { transform: translate3d(-2%, -1.5%, 0) scale(1); opacity: 0.78; }
-  50% { transform: translate3d(2.5%, 1.5%, 0) scale(1.05); opacity: 0.95; }
-  100% { transform: translate3d(-1%, 2.5%, 0) scale(1.02); opacity: 0.82; }
+  0% { transform: translate3d(-2.5%, -1.5%, 0) rotate(-1deg) scale(1); opacity: 0.72; }
+  50% { transform: translate3d(2%, 1.5%, 0) rotate(1deg) scale(1.04); opacity: 0.96; }
+  100% { transform: translate3d(-1%, 2.5%, 0) rotate(-0.5deg) scale(1.01); opacity: 0.78; }
 }
 
 @keyframes luvraFogDriftB {
-  0% { transform: translate3d(2%, 1.5%, 0) scale(1.03); opacity: 0.72; }
-  50% { transform: translate3d(-2.5%, -1%, 0) scale(0.98); opacity: 0.92; }
-  100% { transform: translate3d(1.5%, -2%, 0) scale(1.04); opacity: 0.76; }
+  0% { transform: translate3d(2%, 1.5%, 0) rotate(0.8deg) scale(1.02); opacity: 0.68; }
+  50% { transform: translate3d(-2%, -1%, 0) rotate(-0.8deg) scale(0.99); opacity: 0.92; }
+  100% { transform: translate3d(1.5%, -2%, 0) rotate(0.5deg) scale(1.03); opacity: 0.74; }
+}
+
+@keyframes luvraSilkRipple {
+  0% { transform: rotate(-11deg) translate3d(-3%, 1.5%, 0) scale(1); opacity: 0.68; }
+  50% { transform: rotate(-9.5deg) translate3d(2.5%, -2%, 0) scale(1.04); opacity: 1; }
+  100% { transform: rotate(-12deg) translate3d(-1.5%, 2.5%, 0) scale(1.02); opacity: 0.75; }
+}
+
+@keyframes luvraSilkCreaseGlow {
+  0% { transform: rotate(22deg) translate3d(2%, -1.5%, 0); opacity: 0.55; }
+  50% { transform: rotate(24deg) translate3d(-2.5%, 2%, 0); opacity: 0.95; }
+  100% { transform: rotate(21deg) translate3d(1.5%, 1%, 0); opacity: 0.65; }
 }
 
 img {
@@ -208,6 +263,8 @@ summary:focus:not(:focus-visible),
 
   body::before,
   body::after,
+  .luvra-silk-bg,
+  .luvra-silk-bg::after,
   .luvra-ambient-glow {
     animation: none !important;
     display: none;

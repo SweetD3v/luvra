@@ -14,18 +14,95 @@
     const categoriesTrigger = document.getElementById('nav-categories-trigger');
 
     if (mobileBtn && mobileNav) {
+      let navBackdrop = document.getElementById('mobile-nav-backdrop');
+      if (!navBackdrop && document.createElement && document.body) {
+        navBackdrop = document.createElement('div');
+        navBackdrop.className = 'mobile-nav-backdrop';
+        navBackdrop.id = 'mobile-nav-backdrop';
+        navBackdrop.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(navBackdrop);
+      }
+
+      // Portal out of sticky header's backdrop-filter containing block so fixed drawer covers full viewport
+      if (document.body && mobileNav.parentElement !== document.body) {
+        document.body.appendChild(mobileNav);
+      }
+
+      mobileNav.setAttribute('role', 'dialog');
+      mobileNav.setAttribute('aria-modal', 'true');
+      mobileNav.setAttribute('aria-label', 'Navigation menu');
+      mobileNav.setAttribute('aria-hidden', 'true');
+
+      if (!mobileNav.querySelector('.mobile-nav__header') && document.createElement) {
+        const drawerHeader = document.createElement('div');
+        drawerHeader.className = 'mobile-nav__header';
+        drawerHeader.innerHTML =
+          '<span class="mobile-nav__title">Luvra</span>' +
+          '<button type="button" class="btn--icon-circle mobile-nav__close" aria-label="Close navigation menu">✕</button>';
+        if (mobileNav.prepend) {
+          mobileNav.prepend(drawerHeader);
+        } else {
+          mobileNav.insertBefore(drawerHeader, mobileNav.firstChild);
+        }
+      }
+
+      const closeBtn = mobileNav.querySelector('.mobile-nav__close');
+
+      function openMobileNav() {
+        mobileNav.classList.add('is-open');
+        if (navBackdrop) navBackdrop.classList.add('is-open');
+        mobileBtn.setAttribute('aria-expanded', 'true');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if (closeBtn && typeof closeBtn.focus === 'function') {
+          global.setTimeout(() => closeBtn.focus(), 40);
+        }
+      }
+
+      function closeMobileNav(restoreFocus) {
+        if (!mobileNav.classList.contains('is-open')) return;
+        mobileNav.classList.remove('is-open');
+        if (navBackdrop) navBackdrop.classList.remove('is-open');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (restoreFocus && typeof mobileBtn.focus === 'function') {
+          mobileBtn.focus();
+        }
+      }
+
       mobileBtn.addEventListener('click', () => {
-        const expanded = mobileBtn.getAttribute('aria-expanded') === 'true';
-        mobileBtn.setAttribute('aria-expanded', String(!expanded));
-        mobileNav.classList.toggle('is-open', !expanded);
+        if (mobileNav.classList.contains('is-open')) {
+          closeMobileNav(true);
+        } else {
+          openMobileNav();
+        }
       });
 
-      mobileNav.querySelectorAll('a, button').forEach((el) => {
-        el.addEventListener('click', () => {
-          mobileBtn.setAttribute('aria-expanded', 'false');
-          mobileNav.classList.remove('is-open');
-        });
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => closeMobileNav(true));
+      }
+      if (navBackdrop) {
+        navBackdrop.addEventListener('click', () => closeMobileNav(true));
+      }
+
+      mobileNav.querySelectorAll('a').forEach((el) => {
+        el.addEventListener('click', () => closeMobileNav(false));
       });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNav.classList.contains('is-open')) {
+          closeMobileNav(true);
+        }
+      });
+
+      if (global.addEventListener) {
+        global.addEventListener('resize', () => {
+          if (global.innerWidth > 900 && mobileNav.classList.contains('is-open')) {
+            closeMobileNav(false);
+          }
+        });
+      }
     }
 
     if (categoriesNavItem && categoriesTrigger) {
