@@ -87,7 +87,27 @@
       }
 
       mobileNav.querySelectorAll('a').forEach((el) => {
-        el.addEventListener('click', () => closeMobileNav(false));
+        el.addEventListener('click', (e) => {
+          const href = el.getAttribute('href');
+          const modified = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || el.target === '_blank';
+          if (modified || !href) {
+            closeMobileNav(false);
+            return;
+          }
+
+          e.preventDefault();
+          closeMobileNav(false);
+          global.setTimeout(() => {
+            if (href.startsWith('#')) {
+              const targetEl = document.querySelector(href);
+              if (targetEl && typeof targetEl.scrollIntoView === 'function') {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            } else if (global.location) {
+              global.location.href = href;
+            }
+          }, 340);
+        });
       });
 
       document.addEventListener('keydown', (e) => {
@@ -148,12 +168,21 @@
           );
           const list = targets.length ? Array.from(targets) : [addBtn];
           list.forEach((btn) => {
-            const originalText = btn.textContent;
+            const labelSpan = btn.querySelector ? btn.querySelector('.luvra-ripple-label') : null;
+            const originalText = labelSpan ? labelSpan.textContent : btn.textContent;
             btn.classList.add('is-added');
-            btn.textContent = 'Added to Bag';
+            if (labelSpan) {
+              labelSpan.textContent = 'Added to Bag';
+            } else {
+              btn.textContent = 'Added to Bag';
+            }
             global.setTimeout(() => {
               btn.classList.remove('is-added');
-              btn.textContent = originalText;
+              if (labelSpan) {
+                labelSpan.textContent = originalText;
+              } else {
+                btn.textContent = originalText;
+              }
             }, 900);
           });
           if (drawers && drawers.openCart) {
@@ -167,6 +196,316 @@
       if (quickViewTrigger && drawers) {
         drawers.openQuickView(quickViewTrigger.getAttribute('data-quickview'));
       }
+    });
+
+    // Directional cursor-entry hover fill (excluding .hero) + subtle micro-bounce on click
+    const reducedMotionQuery =
+      typeof global.matchMedia === 'function'
+        ? global.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
+    const finePointerQuery =
+      typeof global.matchMedia === 'function'
+        ? global.matchMedia('(hover: hover) and (pointer: fine)')
+        : null;
+
+    // Sensual glowing heartbeat cursor for fine-pointer desktops across all pages
+    if (
+      finePointerQuery &&
+      finePointerQuery.matches &&
+      typeof document.createElement === 'function' &&
+      document.body &&
+      !document.querySelector('.luvra-cursor')
+    ) {
+      document.documentElement.classList.add('has-heart-cursor');
+      const cursorEl = document.createElement('div');
+      cursorEl.className = 'luvra-cursor';
+      cursorEl.setAttribute('aria-hidden', 'true');
+      cursorEl.innerHTML =
+        '<div class="luvra-cursor__scale">' +
+        '<span class="luvra-cursor__glow"></span>' +
+        '<svg class="luvra-cursor__heart" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M12 20.4c-.3 0-.6-.1-.8-.3C6.1 15.6 3 12.6 3 8.8 3 5.9 5.3 3.7 8.1 3.7c1.6 0 3.1.8 3.9 2 .8-1.2 2.3-2 3.9-2 2.8 0 5.1 2.2 5.1 5.1 0 3.8-3.1 6.8-8.2 11.3-.2.2-.5.3-.8.3z" fill="rgba(166, 68, 98, 0.88)" stroke="#eab3c3" stroke-width="1.4" stroke-linejoin="round" />' +
+        '</svg>' +
+        '</div>';
+      document.body.appendChild(cursorEl);
+
+      const HOVER_TARGET_SELECTOR =
+        'a, button:not(:disabled), .btn, [role="button"], .luvra-select__trigger, .luvra-select__option, input, textarea, select, label';
+      let cursorX = -100;
+      let cursorY = -100;
+      let cursorRaf = 0;
+
+      function syncCursorPos() {
+        cursorRaf = 0;
+        cursorEl.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
+      }
+
+      document.addEventListener(
+        'pointermove',
+        (e) => {
+          cursorX = e.clientX;
+          cursorY = e.clientY;
+          cursorEl.classList.add('is-visible');
+          cursorEl.classList.toggle(
+            'is-hovering',
+            Boolean(e.target && typeof e.target.closest === 'function' && e.target.closest(HOVER_TARGET_SELECTOR))
+          );
+          if (!cursorRaf && typeof global.requestAnimationFrame === 'function') {
+            cursorRaf = global.requestAnimationFrame(syncCursorPos);
+          } else if (typeof global.requestAnimationFrame !== 'function') {
+            syncCursorPos();
+          }
+        },
+        { passive: true }
+      );
+
+      document.addEventListener('pointerdown', () => cursorEl.classList.add('is-pressed'));
+      document.addEventListener('pointerup', () => cursorEl.classList.remove('is-pressed'));
+      document.addEventListener('mouseleave', () => {
+        cursorEl.classList.remove('is-visible', 'is-hovering', 'is-pressed');
+      });
+    }
+    const INTERACTIVE_SELECTOR =
+      'button:not(:disabled), .btn, .btn--icon-circle, .cart-trigger, .filter-pill, .variant-pill, .variant-swatch, .active-chip, .text-link, .mobile-nav__link, .mobile-nav__sublink, .luvra-select__trigger, .luvra-select__option, .quiz-btn-ghost, .mobile-filter-btn, .catalog-search-btn, .featured-explore-link, .account-quick-link';
+    const ANIM_CLASSES = [
+      'is-anim-fill',
+      'is-anim-fill-left',
+      'is-anim-fill-right',
+      'is-anim-bounce',
+      'is-anim-nudge-left',
+      'is-anim-nudge-right',
+      'is-anim-nudge-down',
+    ];
+
+    function isExcludedHeroControl(el) {
+      return Boolean(el && typeof el.closest === 'function' && el.closest('.hero'));
+    }
+
+    function isExcludedCardControl(el) {
+      return Boolean(
+        el &&
+          el.classList &&
+          (el.classList.contains('desire-tile') ||
+            el.classList.contains('arsenal-card') ||
+            el.classList.contains('quiz-option') ||
+            el.classList.contains('search-result-row') ||
+            el.classList.contains('pdp-thumb') ||
+            el.classList.contains('cart-item__remove') ||
+            el.classList.contains('review-box__edit') ||
+            el.classList.contains('cart-alert__action'))
+      );
+    }
+
+    function isBoxedRippleControl(el) {
+      return Boolean(
+        el &&
+          el.classList &&
+          !el.classList.contains('text-link') &&
+          !el.classList.contains('nav-link') &&
+          !el.classList.contains('mobile-nav__link') &&
+          !el.classList.contains('featured-explore-link') &&
+          !isExcludedCardControl(el)
+      );
+    }
+
+    function detectButtonDirection(el) {
+      if (!el) return null;
+      const explicitDir = el.getAttribute && el.getAttribute('data-dir');
+      if (explicitDir === 'left' || el.id === 'featured-prev') return 'left';
+      if (explicitDir === 'right' || el.id === 'featured-next') return 'right';
+      if (
+        el.id === 'nav-categories-trigger' ||
+        (el.classList && el.classList.contains('luvra-select__trigger'))
+      ) {
+        return 'down';
+      }
+      const txt = String(el.textContent || '').trim();
+      const label = String((el.getAttribute && el.getAttribute('aria-label')) || '');
+      if (txt.includes('←') || /\b(previous|prev|back)\b/i.test(txt) || /\bprevious\b/i.test(label)) {
+        return 'left';
+      }
+      if (
+        txt.includes('→') ||
+        /\b(next|continue|proceed|explore|view all|open full)\b/i.test(txt) ||
+        /\bnext\b/i.test(label)
+      ) {
+        return 'right';
+      }
+      return null;
+    }
+
+    function ensureRippleHost(target) {
+      if (typeof global.getComputedStyle === 'function' && global.getComputedStyle(target).position === 'static') {
+        target.classList.add('luvra-ripple-host--rel');
+      }
+      target.classList.add('luvra-ripple-host');
+
+      // Promote bare text nodes into an elevated span so fill ripples always animate behind text
+      if (document.createElement && target.childNodes && target.childNodes.length) {
+        Array.from(target.childNodes).forEach((node) => {
+          if (node.nodeType === 3 && node.nodeValue && node.nodeValue.trim().length > 0) {
+            const span = document.createElement('span');
+            span.className = 'luvra-ripple-label';
+            span.textContent = node.nodeValue;
+            target.replaceChild(span, node);
+          }
+        });
+      }
+    }
+
+    function getRippleGeometry(target, event) {
+      const rect = target.getBoundingClientRect();
+      if (!rect.width || !rect.height) return null;
+      const hasCoords = event && typeof event.clientX === 'number' && typeof event.clientY === 'number';
+      const x = hasCoords ? Math.max(0, Math.min(rect.width, event.clientX - rect.left)) : rect.width / 2;
+      const y = hasCoords ? Math.max(0, Math.min(rect.height, event.clientY - rect.top)) : rect.height / 2;
+      const diameter = Math.ceil(
+        Math.hypot(Math.max(x, rect.width - x), Math.max(y, rect.height - y)) * 2.1
+      );
+      return { x, y, diameter };
+    }
+
+    function enterHoverFill(target, event) {
+      if (!document.createElement || typeof target.getBoundingClientRect !== 'function') return;
+      const geo = getRippleGeometry(target, event);
+      if (!geo) return;
+
+      ensureRippleHost(target);
+      let ripple = target.querySelector('.luvra-fill-ripple--hover');
+      if (ripple && ripple._luvraLeaveTimer) {
+        global.clearTimeout(ripple._luvraLeaveTimer);
+        ripple._luvraLeaveTimer = null;
+      }
+      if (!ripple) {
+        ripple = document.createElement('span');
+        ripple.className = 'luvra-fill-ripple luvra-fill-ripple--hover';
+        ripple.setAttribute('aria-hidden', 'true');
+        target.insertBefore(ripple, target.firstChild);
+      } else {
+        ripple.classList.remove('is-active');
+      }
+
+      ripple.style.width = `${geo.diameter}px`;
+      ripple.style.height = `${geo.diameter}px`;
+      ripple.style.left = `${geo.x}px`;
+      ripple.style.top = `${geo.y}px`;
+      void ripple.offsetWidth;
+      ripple.classList.add('is-active');
+    }
+
+    function leaveHoverFill(target, event) {
+      const ripple = target.querySelector('.luvra-fill-ripple--hover');
+      if (!ripple) return;
+      if (typeof target.getBoundingClientRect === 'function') {
+        const geo = getRippleGeometry(target, event);
+        if (geo) {
+          ripple.style.left = `${geo.x}px`;
+          ripple.style.top = `${geo.y}px`;
+        }
+      }
+      ripple.classList.remove('is-active');
+      if (ripple._luvraLeaveTimer) {
+        global.clearTimeout(ripple._luvraLeaveTimer);
+      }
+      ripple._luvraLeaveTimer = global.setTimeout(() => {
+        if (!ripple.classList.contains('is-active') && ripple.parentNode) {
+          ripple.remove();
+        }
+      }, 450);
+    }
+
+    function spawnClickFill(target, event) {
+      if (!document.createElement || typeof target.getBoundingClientRect !== 'function') return;
+      const hasPointerCoords =
+        event && typeof event.clientX === 'number' && typeof event.clientY === 'number' && event.detail > 0;
+      const geo = getRippleGeometry(target, hasPointerCoords ? event : null);
+      if (!geo) return;
+
+      ensureRippleHost(target);
+      const ripple = document.createElement('span');
+      ripple.className = 'luvra-fill-ripple luvra-fill-ripple--click';
+      ripple.setAttribute('aria-hidden', 'true');
+      ripple.style.width = `${geo.diameter}px`;
+      ripple.style.height = `${geo.diameter}px`;
+      ripple.style.left = `${geo.x}px`;
+      ripple.style.top = `${geo.y}px`;
+      target.insertBefore(ripple, target.firstChild);
+
+      global.setTimeout(() => {
+        if (ripple.parentNode) ripple.remove();
+      }, 540);
+    }
+
+    document.addEventListener('pointerover', (e) => {
+      if (reducedMotionQuery && reducedMotionQuery.matches) return;
+      if (!finePointerQuery || !finePointerQuery.matches) return;
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      if (!e.target || typeof e.target.closest !== 'function') return;
+      const target = e.target.closest(INTERACTIVE_SELECTOR);
+      if (!target || isExcludedHeroControl(target) || !isBoxedRippleControl(target)) return;
+      if (e.relatedTarget && typeof target.contains === 'function' && target.contains(e.relatedTarget)) return;
+      enterHoverFill(target, e);
+    });
+
+    document.addEventListener('pointerout', (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
+      const target = e.target.closest(INTERACTIVE_SELECTOR);
+      if (!target || isExcludedHeroControl(target) || isExcludedCardControl(target)) return;
+      if (e.relatedTarget && typeof target.contains === 'function' && target.contains(e.relatedTarget)) return;
+      leaveHoverFill(target, e);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target || typeof e.target.closest !== 'function') return;
+      const fieldWrap = e.target.closest('.newsletter-form__field, .drawer-promo-field');
+      if (fieldWrap && e.target === fieldWrap && typeof fieldWrap.querySelector === 'function') {
+        const innerInput = fieldWrap.querySelector('input');
+        if (innerInput && typeof innerInput.focus === 'function') {
+          innerInput.focus();
+        }
+        return;
+      }
+      if (reducedMotionQuery && reducedMotionQuery.matches) return;
+      const target = e.target.closest(INTERACTIVE_SELECTOR);
+      if (!target || !target.classList || isExcludedHeroControl(target) || isExcludedCardControl(target)) return;
+
+      const dir = detectButtonDirection(target);
+      const isFineWeb = Boolean(finePointerQuery && finePointerQuery.matches);
+
+      let animClass;
+      if (isFineWeb) {
+        if (isBoxedRippleControl(target) && !target.querySelector('.luvra-fill-ripple--hover.is-active')) {
+          spawnClickFill(target, e);
+        }
+        animClass =
+          dir === 'left'
+            ? 'is-anim-fill-left'
+            : dir === 'right'
+              ? 'is-anim-fill-right'
+              : dir === 'down'
+                ? 'is-anim-nudge-down'
+                : 'is-anim-fill';
+      } else {
+        animClass =
+          dir === 'left'
+            ? 'is-anim-nudge-left'
+            : dir === 'right'
+              ? 'is-anim-nudge-right'
+              : dir === 'down'
+                ? 'is-anim-nudge-down'
+                : 'is-anim-bounce';
+      }
+
+      target.classList.remove(...ANIM_CLASSES);
+      void target.offsetWidth;
+      target.classList.add(animClass);
+      if (target._luvraAnimTimer) {
+        global.clearTimeout(target._luvraAnimTimer);
+      }
+      target._luvraAnimTimer = global.setTimeout(() => {
+        target.classList.remove(animClass);
+        target._luvraAnimTimer = null;
+      }, isFineWeb ? 480 : 340);
     });
 
     document.addEventListener('keydown', (e) => {

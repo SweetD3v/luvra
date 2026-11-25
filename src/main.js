@@ -22,6 +22,8 @@
       '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 1 1 8 0v4"/></svg>',
   };
 
+  let pendingFeaturedDirection = null;
+
   function renderFeaturedSection() {
     const container = document.getElementById('featured-grid');
     if (!container) return;
@@ -34,6 +36,7 @@
       visibleItems.push(featuredEdit[(featuredOffset + i) % featuredEdit.length]);
     }
 
+    container.classList.remove('is-sliding-next', 'is-sliding-prev');
     container.innerHTML = visibleItems
       .map((entry) => {
         if (entry.type === 'editorial') {
@@ -49,6 +52,14 @@
           : '';
       })
       .join('');
+
+    if (pendingFeaturedDirection === 'next' || pendingFeaturedDirection === 'prev') {
+      const cls = pendingFeaturedDirection === 'next' ? 'is-sliding-next' : 'is-sliding-prev';
+      pendingFeaturedDirection = null;
+      void container.offsetWidth;
+      container.classList.add(cls);
+      global.setTimeout(() => container.classList.remove(cls), 500);
+    }
   }
 
   function renderArsenalSection() {
@@ -59,7 +70,7 @@
       .map(
         (item) => `
         <button type="button" class="arsenal-card ${item.lead ? 'arsenal-card--lead' : ''}" data-quickview="${item.id}" aria-label="View ${item.title}">
-          <img class="arsenal-card__img" src="${item.image}" alt="${item.title}" loading="lazy" />
+          <img class="arsenal-card__img" src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" />
           <div class="arsenal-card__scrim" aria-hidden="true"></div>
           <div class="arsenal-card__content">
             <div>
@@ -196,16 +207,6 @@
       global.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) return;
 
-    // Subtle flowing silk-crease sheen behind page content on every page
-    if (document.createElement && document.body && !document.querySelector('.luvra-silk-bg')) {
-      const silkBg = document.createElement('div');
-      silkBg.className = 'luvra-silk-bg';
-      silkBg.setAttribute('aria-hidden', 'true');
-      document.body.prepend
-        ? document.body.prepend(silkBg)
-        : document.body.appendChild(silkBg);
-    }
-
     // Gentle ambient pointer glow on fine-pointer (desktop) devices
     const isFinePointer =
       typeof global.matchMedia === 'function' &&
@@ -276,6 +277,204 @@
     });
   }
 
+  /**
+   * Drifting pinkish-white winter fog waves and subtle micro-sparkles behind hero text.
+   */
+  function initHeroWinterFog() {
+    const canvas = document.getElementById('hero-fog-canvas');
+    const heroSection = document.querySelector('.hero');
+    if (!canvas || !heroSection || typeof canvas.getContext !== 'function') return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const prefersReduced =
+      typeof global.matchMedia === 'function' &&
+      global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function hash(n) {
+      const s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+      return s - Math.floor(s);
+    }
+
+    // Thin, elongated pinkish-white winter fog waves starting from upper-middle to bottom
+    const fogClouds = Array.from({ length: 24 }, (_, idx) => ({
+      startPhase: idx / 24 + hash(idx + 3) * 0.06,
+      baseV: 0.42 + hash(idx + 19) * 0.52,
+      tiltV: (hash(idx + 31) - 0.5) * 0.12,
+      rx: 0.18 + hash(idx + 37) * 0.14,
+      ry: 0.03 + hash(idx + 53) * 0.032,
+      speed: 0.02 + hash(idx + 71) * 0.018,
+      bobAmp: 0.018 + hash(idx + 83) * 0.018,
+      bobFreq: 0.3 + hash(idx + 89) * 0.25,
+      phase: hash(idx + 107) * Math.PI * 2,
+      alpha: 0.14 + hash(idx + 131) * 0.08,
+      spriteIdx: idx % 3,
+    }));
+
+    // Crisp GPU-composited micro-sparkles rendered in SVG/DOM layer (never upscaled/pixelated)
+    const sparklesHost = document.getElementById('hero-sparkles');
+    if (sparklesHost && typeof document.createElement === 'function') {
+      const frag = document.createDocumentFragment ? document.createDocumentFragment() : null;
+      for (let idx = 0; idx < 22; idx++) {
+        const sp = document.createElement('span');
+        const isStar = idx % 5 === 0;
+        const sizePx = isStar ? 5 + hash(idx + 281) * 3 : 2.5 + hash(idx + 293) * 2.5;
+        sp.className = isStar ? 'hero__sparkle hero__sparkle--star' : 'hero__sparkle';
+        sp.style.left = `${(6 + hash(idx + 149) * 88).toFixed(2)}%`;
+        sp.style.top = `${(8 + hash(idx + 167) * 82).toFixed(2)}%`;
+        sp.style.width = `${sizePx.toFixed(1)}px`;
+        sp.style.height = `${sizePx.toFixed(1)}px`;
+        if (typeof sp.style.setProperty === 'function') {
+          sp.style.setProperty('--sp-dur', `${(5.4 + hash(idx + 241) * 4.2).toFixed(2)}s`);
+          sp.style.setProperty('--sp-delay', `${(-hash(idx + 211) * 6).toFixed(2)}s`);
+          sp.style.setProperty('--sp-dx', `${((hash(idx + 181) - 0.35) * 18).toFixed(1)}px`);
+          sp.style.setProperty('--sp-dy', `${(6 + hash(idx + 199) * 14).toFixed(1)}px`);
+          sp.style.setProperty('--sp-max', `${(0.32 + hash(idx + 263) * 0.28).toFixed(2)}`);
+        }
+        if (frag) frag.appendChild(sp);
+        else sparklesHost.appendChild(sp);
+      }
+      if (frag) sparklesHost.appendChild(frag);
+    }
+
+    let width = 0;
+    let height = 0;
+    let rafId = null;
+    let isVisible = true;
+    let lastDrawMs = 0;
+    const startTime =
+      typeof global.performance === 'object' && global.performance.now ? global.performance.now() : Date.now();
+
+    // Pre-bake 3 reusable soft radial mist sprites once (zero per-frame gradient allocations)
+    const mistPalette = ['250, 232, 239', '238, 198, 214', '246, 218, 229'];
+    const mistSprites = mistPalette.map((rgb) => {
+      if (typeof document.createElement !== 'function') return null;
+      const off = document.createElement('canvas');
+      if (!off || typeof off.getContext !== 'function') return null;
+      off.width = 128;
+      off.height = 128;
+      const octx = off.getContext('2d');
+      if (!octx) return null;
+      const g = octx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      g.addColorStop(0, `rgba(${rgb}, 1)`);
+      g.addColorStop(0.5, `rgba(${rgb}, 0.42)`);
+      g.addColorStop(1, `rgba(${rgb}, 0)`);
+      octx.fillStyle = g;
+      octx.fillRect(0, 0, 128, 128);
+      return off;
+    });
+
+    function syncSize() {
+      const cssW = heroSection.clientWidth || 0;
+      const cssH = heroSection.clientHeight || 0;
+      if (!cssW || !cssH) return false;
+      // Low internal resolution (~480px wide) makes GPU bilinear upscaling naturally dreamy without blur shaders
+      const scale = Math.min(1, 480 / cssW);
+      const w = Math.max(160, Math.round(cssW * scale));
+      const h = Math.max(120, Math.round(cssH * scale));
+      if (w !== width || h !== height) {
+        width = w;
+        height = h;
+        canvas.width = w;
+        canvas.height = h;
+      }
+      return true;
+    }
+
+    function renderFrame(nowMs) {
+      if (!syncSize()) return;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const elapsed = Math.max(0, (nowMs - startTime) / 1000);
+
+      // Overlapping soft pinkish-white winter fog waves drifting across the right 60% character side (full width on mobile)
+      const isNarrow = (heroSection.clientWidth || width) <= 600;
+      const uStart = isNarrow ? -0.18 : 0.32;
+      const uSpan = isNarrow ? 1.36 : 0.86;
+
+      fogClouds.forEach((c) => {
+        const life = prefersReduced ? 0.5 : (c.startPhase + elapsed * c.speed) % 1;
+        const lifeFade = Math.sin(life * Math.PI);
+        if (lifeFade <= 0.01) return;
+
+        const u = uStart + life * uSpan;
+        const v =
+          c.baseV +
+          c.tiltV * (life - 0.5) +
+          (prefersReduced ? 0 : Math.sin(elapsed * c.bobFreq + c.phase) * c.bobAmp);
+        const swell = prefersReduced ? 1 : 0.94 + 0.12 * Math.sin(elapsed * 0.35 + c.phase);
+        const cx = u * width;
+        const cy = v * height;
+        const rx = c.rx * width * swell;
+        const ry = c.ry * height * swell;
+        const sprite = mistSprites[c.spriteIdx];
+        const effAlpha = c.alpha * lifeFade;
+
+        if (sprite) {
+          ctx.save();
+          ctx.globalAlpha = effAlpha;
+          ctx.drawImage(sprite, cx - rx, cy - ry, rx * 2, ry * 2);
+          ctx.restore();
+        } else {
+          const rad = Math.max(rx, ry);
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.scale(rx / rad, ry / rad);
+          const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, rad);
+          grad.addColorStop(0, `rgba(246, 222, 232, ${effAlpha})`);
+          grad.addColorStop(1, 'rgba(246, 222, 232, 0)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(0, 0, rad, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+    }
+
+    function tick(now) {
+      if (!isVisible || document.hidden) {
+        rafId = null;
+        return;
+      }
+      // Smooth 30fps cap for slow ambient mist saves half the GPU fill-rate
+      if (now - lastDrawMs >= 32) {
+        lastDrawMs = now;
+        renderFrame(now);
+      }
+      rafId = global.requestAnimationFrame(tick);
+    }
+
+    function startLoop() {
+      if (prefersReduced) {
+        renderFrame(startTime);
+        return;
+      }
+      if (!rafId && typeof global.requestAnimationFrame === 'function') {
+        rafId = global.requestAnimationFrame(tick);
+      }
+    }
+
+    if (typeof global.IntersectionObserver === 'function') {
+      const obs = new global.IntersectionObserver(
+        (entries) => {
+          isVisible = Boolean(entries[0] && entries[0].isIntersecting);
+          if (isVisible) startLoop();
+        },
+        { threshold: 0.01 }
+      );
+      obs.observe(heroSection);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && isVisible) startLoop();
+    });
+
+    startLoop();
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const drawers = Luvra.initDrawers();
     if (Luvra.initCommonShell) {
@@ -286,6 +485,7 @@
     const pageMode = document.body.dataset.page || 'home';
 
     if (pageMode === 'home') {
+      initHeroWinterFog();
       renderFeaturedSection();
       renderArsenalSection();
       renderDesireCategories();
@@ -304,8 +504,18 @@
       const nextBtn = document.getElementById('featured-next');
       const toggleBtn = document.getElementById('collection-toggle-btn');
 
-      if (prevBtn) prevBtn.addEventListener('click', () => Luvra.store.shiftFeatured(-1));
-      if (nextBtn) nextBtn.addEventListener('click', () => Luvra.store.shiftFeatured(1));
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          pendingFeaturedDirection = 'prev';
+          Luvra.store.shiftFeatured(-1);
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          pendingFeaturedDirection = 'next';
+          Luvra.store.shiftFeatured(1);
+        });
+      }
       if (toggleBtn) toggleBtn.addEventListener('click', () => Luvra.store.toggleShowAllCollection());
 
       document.querySelectorAll('.filter-pill').forEach((pill) => {

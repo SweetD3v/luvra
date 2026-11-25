@@ -219,14 +219,16 @@
 
             <div class="cart-promo-section">
               <form class="drawer-promo-form" id="cart-page-promo-form" novalidate>
-                <label for="cart-page-promo-input" class="sr-only">Promo code</label>
-                <input
-                  type="text"
-                  id="cart-page-promo-input"
-                  class="drawer-promo-input"
-                  placeholder="Enter promo code"
-                  autocomplete="off"
-                />
+                <div class="drawer-promo-field">
+                  <input
+                    type="text"
+                    id="cart-page-promo-input"
+                    class="drawer-promo-input"
+                    placeholder="Enter promo code"
+                    aria-label="Promo code"
+                    autocomplete="off"
+                  />
+                </div>
                 <button type="submit" class="drawer-promo-btn">Apply</button>
               </form>
               <p class="drawer-promo-feedback" id="cart-page-promo-error" role="alert">${escapeHtml(promoError)}</p>

@@ -112,14 +112,16 @@
 
           <div class="cart-promo-section">
             <form class="drawer-promo-form" id="checkout-promo-form" novalidate>
-              <label for="checkout-promo-input" class="sr-only">Promo code</label>
-              <input
-                type="text"
-                id="checkout-promo-input"
-                class="drawer-promo-input"
-                placeholder="Promo code"
-                autocomplete="off"
-              />
+              <div class="drawer-promo-field">
+                <input
+                  type="text"
+                  id="checkout-promo-input"
+                  class="drawer-promo-input"
+                  placeholder="Promo code"
+                  aria-label="Promo code"
+                  autocomplete="off"
+                />
+              </div>
               <button type="submit" class="drawer-promo-btn">Apply</button>
             </form>
             <p class="drawer-promo-feedback" role="alert">${escapeHtml(promoError)}</p>

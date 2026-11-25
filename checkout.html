@@ -19,11 +19,11 @@
     <link rel="icon" type="image/png" href="assets/images/luvra-logo.png" />
     <link rel="apple-touch-icon" href="assets/images/luvra-logo.png" />
     <link rel="stylesheet" href="styles/tokens.css" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/components.css" />
-    <link rel="stylesheet" href="styles/sections.css" />
+    <link rel="stylesheet" href="styles/base.css?v=9" />
+    <link rel="stylesheet" href="styles/components.css?v=8" />
+    <link rel="stylesheet" href="styles/sections.css?v=8" />
     <link rel="stylesheet" href="styles/cart.css" />
-    <link rel="stylesheet" href="styles/checkout.css" />
+    <link rel="stylesheet" href="styles/checkout.css?v=8" />
   </head>
   <body data-page="checkout">
     <div class="announcement-bar" role="region" aria-label="Shipping announcement">
@@ -113,22 +113,22 @@
           </button>
         </div>
       </div>
-
-      <div class="mobile-nav" id="mobile-nav">
-        <div class="mobile-nav__links">
-          <a href="shop.html" class="mobile-nav__link">Shop</a>
-          <a href="collection.html" class="mobile-nav__link">Collection</a>
-          <a href="cart.html" class="mobile-nav__link">Bag</a>
-          <a href="index.html#our-promise" class="mobile-nav__link">Our Promise</a>
-        </div>
-        <div class="mobile-nav__sublinks">
-          <a href="collection.html?category=for-her" class="mobile-nav__sublink">For Her</a>
-          <a href="collection.html?category=for-him" class="mobile-nav__sublink">For Him</a>
-          <a href="collection.html?category=couples" class="mobile-nav__sublink">Couples</a>
-          <a href="collection.html?category=wellness" class="mobile-nav__sublink">Wellness</a>
-        </div>
-      </div>
     </header>
+
+    <div class="mobile-nav" id="mobile-nav">
+      <div class="mobile-nav__links">
+        <a href="shop.html" class="mobile-nav__link">Shop</a>
+        <a href="collection.html" class="mobile-nav__link">Collection</a>
+        <a href="cart.html" class="mobile-nav__link">Bag</a>
+        <a href="index.html#our-promise" class="mobile-nav__link">Our Promise</a>
+        </div>
+      <div class="mobile-nav__sublinks">
+        <a href="collection.html?category=for-her" class="mobile-nav__sublink">For Her</a>
+        <a href="collection.html?category=for-him" class="mobile-nav__sublink">For Him</a>
+        <a href="collection.html?category=couples" class="mobile-nav__sublink">Couples</a>
+        <a href="collection.html?category=wellness" class="mobile-nav__sublink">Wellness</a>
+      </div>
+    </div>
 
     <main class="checkout-page">
       <div class="container" id="checkout-root"></div>
@@ -210,9 +210,9 @@
     <script defer src="src/state/store.js"></script>
     <script defer src="src/services/paymentAdapter.js"></script>
     <script defer src="src/components/productCard.js"></script>
-    <script defer src="src/components/drawers.js"></script>
-    <script defer src="src/components/catalogExplorer.js"></script>
-    <script defer src="src/components/checkout.js"></script>
-    <script defer src="src/main.js"></script>
+    <script defer src="src/components/drawers.js?v=8"></script>
+    <script defer src="src/components/catalogExplorer.js?v=9"></script>
+    <script defer src="src/components/checkout.js?v=8"></script>
+    <script defer src="src/main.js?v=8"></script>
   </body>
 </html>

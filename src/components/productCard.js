@@ -61,7 +61,7 @@
       <article class="product-card ${isWaitlist ? 'is-waitlist' : ''}" data-product-id="${escapeHtml(product.id)}">
         <div class="product-card__media-wrap">
           <a href="${detailHref}" class="product-card__media" aria-label="View ${escapeHtml(product.name)} details">
-            <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />
+            <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" decoding="async" />
             ${badge ? `<span class="product-card__badge">${escapeHtml(badge)}</span>` : ''}
           </a>
           ${
@@ -128,7 +128,7 @@
       <article class="product-card">
         <div class="product-card__media-wrap">
           <a href="${detailHref}" class="product-card__media" aria-label="Explore ${escapeHtml(entry.title)}">
-            <img src="${escapeHtml(entry.image)}" alt="${escapeHtml(entry.title)}" loading="lazy" />
+            <img src="${escapeHtml(entry.image)}" alt="${escapeHtml(entry.title)}" loading="lazy" decoding="async" />
             <span class="product-card__badge">${escapeHtml(entry.badge)}</span>
           </a>
         </div>

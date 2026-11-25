@@ -42,14 +42,16 @@
 
         <div class="cart-drawer__footer" id="cart-drawer-footer">
           <form class="drawer-promo-form" id="drawer-promo-form" novalidate>
-            <label for="drawer-promo-input" class="sr-only">Promo code</label>
-            <input
-              type="text"
-              id="drawer-promo-input"
-              class="drawer-promo-input"
-              placeholder="Promo code (e.g. LUVRA10)"
-              autocomplete="off"
-            />
+            <div class="drawer-promo-field">
+              <input
+                type="text"
+                id="drawer-promo-input"
+                class="drawer-promo-input"
+                placeholder="Promo code (e.g. LUVRA10)"
+                aria-label="Promo code"
+                autocomplete="off"
+              />
+            </div>
             <button type="submit" class="drawer-promo-btn" id="drawer-promo-btn">Apply</button>
           </form>
           <p class="drawer-promo-feedback" id="drawer-promo-feedback" role="alert"></p>
@@ -973,7 +975,9 @@
         const changed = nativeSelect.value !== val;
         nativeSelect.value = val;
         syncOptions();
-        closeMenu(true);
+        global.setTimeout(() => {
+          closeMenu(true);
+        }, 85);
         if (changed && typeof global.Event === 'function') {
           nativeSelect.dispatchEvent(new global.Event('change', { bubbles: true }));
         }

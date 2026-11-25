@@ -33,105 +33,11 @@ body {
   caret-color: transparent;
 }
 
-/* Flowing obsidian silk creases & warm specular sheen behind content */
-body::before,
-body::after {
-  content: '';
-  position: fixed;
-  inset: -24%;
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform, opacity;
-}
-
-body::before {
-  background:
-    linear-gradient(
-      118deg,
-      transparent 16%,
-      rgba(74, 28, 42, 0.08) 28%,
-      rgba(201, 169, 126, 0.045) 33%,
-      transparent 40%,
-      rgba(74, 28, 42, 0.07) 58%,
-      rgba(201, 169, 126, 0.04) 63%,
-      transparent 72%
-    );
-  filter: blur(28px);
-  animation: luvraFogDriftA 26s ease-in-out infinite alternate;
-}
-
-body::after {
-  background:
-    linear-gradient(
-      148deg,
-      transparent 22%,
-      rgba(201, 169, 126, 0.032) 34%,
-      rgba(82, 32, 45, 0.075) 42%,
-      transparent 52%,
-      rgba(201, 169, 126, 0.035) 70%,
-      transparent 82%
-    );
-  filter: blur(36px);
-  animation: luvraFogDriftB 32s ease-in-out infinite alternate;
-}
-
-.luvra-silk-bg {
-  position: fixed;
-  inset: -16%;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-  will-change: transform, opacity;
-  background:
-    radial-gradient(ellipse 95% 24% at 28% 32%, rgba(201, 169, 126, 0.055), transparent 68%),
-    radial-gradient(ellipse 85% 20% at 72% 64%, rgba(126, 52, 72, 0.075), transparent 68%),
-    radial-gradient(ellipse 75% 18% at 45% 84%, rgba(201, 169, 126, 0.04), transparent 70%);
-  transform: rotate(-11deg);
-  filter: blur(22px);
-  animation: luvraSilkRipple 28s ease-in-out infinite alternate;
-}
-
-.luvra-silk-bg::after {
-  content: '';
-  position: absolute;
-  inset: -12%;
-  background:
-    radial-gradient(ellipse 90% 14% at 62% 28%, rgba(215, 188, 149, 0.042), transparent 62%),
-    radial-gradient(ellipse 80% 16% at 34% 72%, rgba(92, 34, 49, 0.07), transparent 64%);
-  transform: rotate(22deg);
-  filter: blur(18px);
-  animation: luvraSilkCreaseGlow 22s ease-in-out infinite alternate;
-}
-
 body > header,
 body > main,
 body > footer {
   position: relative;
   z-index: 1;
-}
-
-@keyframes luvraFogDriftA {
-  0% { transform: translate3d(-2.5%, -1.5%, 0) rotate(-1deg) scale(1); opacity: 0.72; }
-  50% { transform: translate3d(2%, 1.5%, 0) rotate(1deg) scale(1.04); opacity: 0.96; }
-  100% { transform: translate3d(-1%, 2.5%, 0) rotate(-0.5deg) scale(1.01); opacity: 0.78; }
-}
-
-@keyframes luvraFogDriftB {
-  0% { transform: translate3d(2%, 1.5%, 0) rotate(0.8deg) scale(1.02); opacity: 0.68; }
-  50% { transform: translate3d(-2%, -1%, 0) rotate(-0.8deg) scale(0.99); opacity: 0.92; }
-  100% { transform: translate3d(1.5%, -2%, 0) rotate(0.5deg) scale(1.03); opacity: 0.74; }
-}
-
-@keyframes luvraSilkRipple {
-  0% { transform: rotate(-11deg) translate3d(-3%, 1.5%, 0) scale(1); opacity: 0.68; }
-  50% { transform: rotate(-9.5deg) translate3d(2.5%, -2%, 0) scale(1.04); opacity: 1; }
-  100% { transform: rotate(-12deg) translate3d(-1.5%, 2.5%, 0) scale(1.02); opacity: 0.75; }
-}
-
-@keyframes luvraSilkCreaseGlow {
-  0% { transform: rotate(22deg) translate3d(2%, -1.5%, 0); opacity: 0.55; }
-  50% { transform: rotate(24deg) translate3d(-2.5%, 2%, 0); opacity: 0.95; }
-  100% { transform: rotate(21deg) translate3d(1.5%, 1%, 0); opacity: 0.65; }
 }
 
 img {
@@ -196,6 +102,8 @@ a {
 
 summary,
 label,
+form,
+.newsletter-panel,
 .product-card__badge,
 .kicker,
 .desire-tile,
@@ -203,6 +111,7 @@ label,
 .filter-pill,
 .checkout-step-btn {
   user-select: none;
+  caret-color: transparent;
 }
 
 ul,
@@ -251,6 +160,164 @@ summary:focus:not(:focus-visible),
   outline: none;
 }
 
+/* Directional Cursor-Entry Hover Fill + Click Micro-Bounce (Web) & Quick Bounce (Mobile) */
+.luvra-ripple-host {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.luvra-ripple-host--rel {
+  position: relative;
+}
+
+.luvra-ripple-host > *:not(.luvra-fill-ripple),
+.luvra-ripple-label {
+  position: relative;
+  z-index: 2;
+}
+
+.luvra-ripple-host:hover {
+  color: #ffffff;
+}
+
+.btn--outline.luvra-ripple-host:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: var(--border-gold);
+}
+
+.luvra-fill-ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background-color: rgba(116, 44, 62, 0.82);
+  transform: translate3d(-50%, -50%, 0) scale(0);
+  opacity: 0;
+  transition:
+    transform 440ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 320ms var(--ease-subtle);
+  will-change: transform, opacity;
+}
+
+.luvra-fill-ripple.is-active {
+  transform: translate3d(-50%, -50%, 0) scale(1);
+  opacity: 1;
+}
+
+.btn--primary .luvra-fill-ripple,
+.newsletter-form__submit .luvra-fill-ripple,
+.catalog-search-btn .luvra-fill-ripple,
+.filter-pill.is-active .luvra-fill-ripple {
+  background-color: rgba(201, 169, 126, 0.24);
+}
+
+.luvra-fill-ripple--click {
+  opacity: 0.92;
+  animation: luvraFillRipple 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes luvraFillRipple {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0);
+    opacity: 0.94;
+  }
+  58% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(1.04);
+    opacity: 0;
+  }
+}
+
+@keyframes luvraFillMicroBounce {
+  0% { transform: scale(1); }
+  26% { transform: scale(0.972); }
+  64% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+@keyframes luvraFillMicroLeft {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  28% { transform: translate3d(-4px, 0, 0) scale(0.975); }
+  64% { transform: translate3d(1px, 0, 0) scale(1.012); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes luvraFillMicroRight {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  28% { transform: translate3d(4px, 0, 0) scale(0.975); }
+  64% { transform: translate3d(-1px, 0, 0) scale(1.012); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes luvraMobileQuickBounce {
+  0% { transform: scale(1); }
+  32% { transform: scale(0.945); }
+  68% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes luvraMobileQuickLeft {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  32% { transform: translate3d(-4px, 0, 0) scale(0.955); }
+  68% { transform: translate3d(1px, 0, 0) scale(1.015); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes luvraMobileQuickRight {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  32% { transform: translate3d(4px, 0, 0) scale(0.955); }
+  68% { transform: translate3d(-1px, 0, 0) scale(1.015); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes luvraNudgeDown {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  34% { transform: translate3d(0, 3px, 0) scale(0.975); }
+  70% { transform: translate3d(0, -1px, 0) scale(1.01); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.is-anim-fill {
+  animation: luvraFillMicroBounce 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-fill-left {
+  animation: luvraFillMicroLeft 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-fill-right {
+  animation: luvraFillMicroRight 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-bounce {
+  animation: luvraMobileQuickBounce 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-nudge-left {
+  animation: luvraMobileQuickLeft 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-nudge-right {
+  animation: luvraMobileQuickRight 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-nudge-down {
+  animation: luvraNudgeDown 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-fill-left svg,
+.is-anim-nudge-left svg {
+  animation: luvraFillMicroLeft 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.is-anim-fill-right svg,
+.is-anim-nudge-right svg {
+  animation: luvraFillMicroRight 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 :focus-visible {
   outline: 2px solid var(--gold-soft);
   outline-offset: 2px;
@@ -261,10 +328,6 @@ summary:focus:not(:focus-visible),
     scroll-behavior: auto;
   }
 
-  body::before,
-  body::after,
-  .luvra-silk-bg,
-  .luvra-silk-bg::after,
   .luvra-ambient-glow {
     animation: none !important;
     display: none;
@@ -379,5 +442,130 @@ summary:focus:not(:focus-visible),
 
 .text-link:hover {
   color: var(--gold);
+}
+
+/* Custom sensual heartbeat cursor with subtle glow (fine pointers only) */
+@media (hover: hover) and (pointer: fine) {
+  html.has-heart-cursor,
+  html.has-heart-cursor * {
+    cursor: none !important;
+  }
+}
+
+.luvra-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity 180ms ease;
+}
+
+.luvra-cursor.is-visible {
+  opacity: 1;
+}
+
+.luvra-cursor__scale {
+  position: relative;
+  transform: scale(1);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.luvra-cursor.is-hovering .luvra-cursor__scale {
+  transform: scale(1.22);
+}
+
+.luvra-cursor.is-pressed .luvra-cursor__scale {
+  transform: scale(0.84);
+}
+
+.luvra-cursor__glow {
+  position: absolute;
+  left: -17px;
+  top: -17px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(228, 138, 168, 0.36) 0%,
+    rgba(164, 58, 92, 0.14) 52%,
+    transparent 76%
+  );
+  animation: luvraHeartbeatGlow 1.55s ease-in-out infinite;
+}
+
+.luvra-cursor.is-hovering .luvra-cursor__glow {
+  background: radial-gradient(
+    circle,
+    rgba(242, 164, 190, 0.48) 0%,
+    rgba(182, 68, 104, 0.2) 52%,
+    transparent 76%
+  );
+}
+
+.luvra-cursor__heart {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(226, 142, 170, 0.65));
+  animation: luvraHeartbeat 1.55s ease-in-out infinite;
+}
+
+@keyframes luvraHeartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.16);
+  }
+  28% {
+    transform: scale(0.98);
+  }
+  40% {
+    transform: scale(1.1);
+  }
+  56% {
+    transform: scale(1);
+  }
+}
+
+@keyframes luvraHeartbeatGlow {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.72;
+  }
+  14% {
+    transform: scale(1.18);
+    opacity: 1;
+  }
+  28% {
+    transform: scale(0.96);
+    opacity: 0.78;
+  }
+  40% {
+    transform: scale(1.12);
+    opacity: 0.94;
+  }
+  56% {
+    transform: scale(0.92);
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luvra-cursor__heart,
+  .luvra-cursor__glow {
+    animation: none;
+  }
 }
 
