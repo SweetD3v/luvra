@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Logs & Temp
+*.log
+npm-debug.log*
+tmp/
+.cache/
+
+# Editor
+.vscode/
+.idea/

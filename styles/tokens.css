@@ -1,0 +1,58 @@
+/* ==========================================================================
+   Luvra Design Tokens
+   Dark editorial palette: near-black & charcoal, warm ivory,
+   restrained champagne-gold, and small muted burgundy accents.
+   ========================================================================== */
+
+:root {
+  /* Surfaces */
+  --bg-primary: #0b0a0c;
+  --bg-elevated: #121013;
+  --bg-card: #151316;
+  --bg-card-hover: #1b181c;
+  --bg-wine-tint: #181014;
+  --bg-input: #0e0c0f;
+
+  /* Text */
+  --text-primary: #f3ede4;
+  --text-secondary: #b8aea4;
+  --text-muted: #998f86;
+
+  /* Accents */
+  --gold: #c9a97e;
+  --gold-soft: #d7bc95;
+  --gold-muted: rgba(201, 169, 126, 0.16);
+  --burgundy: #52202d;
+  --burgundy-hover: #642837;
+  --burgundy-border: rgba(138, 63, 82, 0.35);
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.13);
+  --border-gold: rgba(201, 169, 126, 0.25);
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Layout & Spacing */
+  --container-max: 1200px;
+  --container-pad: clamp(1.125rem, 3vw, 2rem);
+  --section-gap: clamp(3.75rem, 7vw, 5.5rem);
+
+  /* Motion (restrained) */
+  --ease-subtle: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 180ms var(--ease-subtle);
+  --transition-base: 260ms var(--ease-subtle);
+
+  /* Elevation */
+  --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.42);
+  --shadow-drawer: -16px 0 48px rgba(0, 0, 0, 0.65);
+}
+

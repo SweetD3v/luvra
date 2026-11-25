@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luvra — Sculpted Intimate Wellness</title>
+    <meta
+      name="description"
+      content="Luvra crafts quiet, architectural intimate wellness objects, botanical elixirs, and couples pieces delivered in unmarked matte packaging."
+    />
+
+    <!-- Typography: Cormorant Garamond + Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Modular Stylesheets -->
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/sections.css" />
+  </head>
+  <body data-page="home">
+    <!-- 1. Slim Announcement Bar -->
+    <div class="announcement-bar" role="region" aria-label="Shipping announcement">
+      <p class="announcement-bar__text">
+        Free Discreet Shipping on Orders $75+
+        <span class="announcement-bar__sep" aria-hidden="true">•</span>
+        Unmarked Matte Packaging
+      </p>
+    </div>
+
+    <!-- 2. Header Navigation -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand-wordmark" aria-label="Luvra home">
+          LUVRA<span class="brand-wordmark__dot" aria-hidden="true"></span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <a href="shop.html" class="nav-link">Shop</a>
+
+          <div class="nav-item" id="nav-categories-item">
+            <button
+              type="button"
+              class="nav-link"
+              id="nav-categories-trigger"
+              aria-expanded="false"
+              aria-controls="nav-categories-menu"
+            >
+              Categories
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            <div class="nav-dropdown" id="nav-categories-menu" role="menu">
+              <a href="collection.html?category=for-her" class="nav-dropdown__link" role="menuitem">
+                For Her <span>Solo rituals</span>
+              </a>
+              <a href="collection.html?category=for-him" class="nav-dropdown__link" role="menuitem">
+                For Him <span>Precision</span>
+              </a>
+              <a href="collection.html?category=couples" class="nav-dropdown__link" role="menuitem">
+                Couples <span>Shared wave</span>
+              </a>
+              <a href="collection.html?category=wellness" class="nav-dropdown__link" role="menuitem">
+                Wellness <span>Oils &amp; elixirs</span>
+              </a>
+            </div>
+          </div>
+
+          <a href="collection.html" class="nav-link">Collection</a>
+          <a href="#our-promise" class="nav-link">Our Promise</a>
+        </nav>
+
+        <div class="header-actions">
+          <button
+            type="button"
+            class="btn--icon-circle"
+            id="search-open-btn"
+            aria-label="Search Luvra"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="btn--icon-circle"
+            id="account-open-btn"
+            aria-label="Account"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M5 20a7 7 0 0 1 14 0" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="cart-trigger"
+            id="cart-open-btn"
+            aria-label="Open shopping bag"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <path d="M6 7h12l1 13H5L6 7Z" />
+              <path d="M9 7V5a3 3 0 0 1 6 0v2" />
+            </svg>
+            <span class="cart-trigger__count" id="header-cart-count">0</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn--icon-circle mobile-menu-btn"
+            id="mobile-menu-btn"
+            aria-label="Toggle navigation menu"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav__links">
+          <a href="shop.html" class="mobile-nav__link">Shop</a>
+          <a href="collection.html" class="mobile-nav__link">Collection</a>
+          <a href="search.html" class="mobile-nav__link">Search</a>
+          <a href="#our-promise" class="mobile-nav__link">Our Promise</a>
+        </div>
+        <div class="mobile-nav__sublinks">
+          <a href="collection.html?category=for-her" class="mobile-nav__sublink">For Her</a>
+          <a href="collection.html?category=for-him" class="mobile-nav__sublink">For Him</a>
+          <a href="collection.html?category=couples" class="mobile-nav__sublink">Couples</a>
+          <a href="collection.html?category=wellness" class="mobile-nav__sublink">Wellness</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- 3. Hero Section -->
+      <section class="hero" aria-label="Luvra editorial campaign">
+        <div class="hero__media" aria-hidden="true">
+          <img
+            src="assets/images/hero-campaign-4k.jpg"
+            alt="Luvra editorial campaign"
+            class="hero__img"
+          />
+          <div class="hero__fog"></div>
+          <div class="hero__scrim"></div>
+        </div>
+
+        <div class="container">
+          <div class="hero__content">
+            <span class="kicker">Awaken the Senses</span>
+            <h1 class="hero__title">
+              Embrace<br />
+              <em>Your</em> Desires
+            </h1>
+            <p class="hero__copy">
+              Curated intimacy, designed for the modern connoisseur—quietly sculpted in matte
+              silicone, amber glass, and architectural form.
+            </p>
+            <a href="#collection" class="btn btn--primary">
+              Explore Collection
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Featured Edit -->
+      <section class="section" id="featured-edit" aria-labelledby="featured-heading">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="kicker">Featured Edit</span>
+              <h2 class="section-title" id="featured-heading">
+                New, Latest &amp; <em>Most Loved</em>
+              </h2>
+            </div>
+
+            <div class="featured-controls">
+              <button
+                type="button"
+                class="btn--icon-circle"
+                id="featured-prev"
+                aria-label="Previous featured pieces"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="btn--icon-circle"
+                id="featured-next"
+                aria-label="Next featured pieces"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="featured-grid" id="featured-grid"></div>
+        </div>
+      </section>
+
+      <!-- 5. The Arsenal -->
+      <section class="section" id="arsenal" aria-labelledby="arsenal-heading">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title" id="arsenal-heading">The Arsenal</h2>
+              <p class="section-subtitle">
+                Artfully engineered for transcendent pleasure, sculpted in understated elegance.
+              </p>
+            </div>
+            <a href="collection.html?collection=arsenal" class="text-link">
+              View All <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="arsenal-grid" id="arsenal-grid"></div>
+        </div>
+      </section>
+
+      <!-- 6. Explore by Desire (Categories) -->
+      <section class="section" id="categories" aria-labelledby="desire-heading">
+        <div class="container">
+          <div class="desire-panel">
+            <div>
+              <span class="kicker">Curated for You</span>
+              <h2 class="desire-panel__title" id="desire-heading">
+                Explore <em>By Desire</em>
+              </h2>
+              <p class="desire-panel__copy">Choose who you are shopping for tonight.</p>
+              <a href="quiz.html" class="text-link" style="margin-top: 0.85rem;">
+                Product Finder Quiz <span aria-hidden="true">→</span>
+              </a>
+            </div>
+
+            <div class="desire-tiles" id="desire-tiles"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Shop the Collection -->
+      <section class="section" id="collection" aria-labelledby="collection-heading">
+        <div class="container">
+          <div class="collection-header">
+            <h2 class="collection-label" id="collection-heading">Shop the Collection</h2>
+
+            <div class="filter-pills" role="group" aria-label="Filter collection by category">
+              <button type="button" class="filter-pill is-active" data-filter="all" aria-pressed="true">
+                All
+              </button>
+              <button type="button" class="filter-pill" data-filter="for-her" aria-pressed="false">
+                For Her
+              </button>
+              <button type="button" class="filter-pill" data-filter="for-him" aria-pressed="false">
+                For Him
+              </button>
+              <button type="button" class="filter-pill" data-filter="couples" aria-pressed="false">
+                Couples
+              </button>
+              <button type="button" class="filter-pill" data-filter="wellness" aria-pressed="false">
+                Wellness
+              </button>
+            </div>
+          </div>
+
+          <div class="collection-grid" id="collection-grid"></div>
+
+          <div class="collection-footer" id="collection-footer" style="gap: 0.75rem; flex-wrap: wrap;">
+            <button type="button" class="collection-toggle-btn" id="collection-toggle-btn">
+              View Full Edit
+            </button>
+            <a href="shop.html" class="collection-toggle-btn">
+              Open Full Shop →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Our Promise & Discreet Packaging -->
+      <section class="section" id="our-promise" aria-labelledby="promise-heading">
+        <div class="container">
+          <div class="promise-split">
+            <div>
+              <span class="kicker">Our Promise</span>
+              <h2 class="section-title" id="promise-heading">
+                Thoughtfully Designed.<br />
+                <em>Intentionally Yours.</em>
+              </h2>
+
+              <div class="promise-cards" id="promise-cards"></div>
+            </div>
+
+            <div class="packaging-feature">
+              <img
+                src="assets/images/discreet-packaging.jpg"
+                alt="Unmarked matte-black Luvra gift box on dark velvet beside a warm candle"
+                loading="lazy"
+              />
+              <div class="packaging-feature__caption">
+                <div>
+                  <span class="packaging-feature__label">Discreet Packaging</span>
+                  <p class="packaging-feature__sub">Zero external logos. Plain matte exterior.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Quiet Testimonials -->
+      <section class="section" id="testimonials" aria-labelledby="testimonials-heading">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <span class="kicker">Verified Experiences</span>
+              <h2 class="section-title" id="testimonials-heading">
+                Quiet <em>Testimonials</em>
+              </h2>
+            </div>
+            <span class="testimonials-note">100% Private, Verified Reviews</span>
+          </div>
+
+          <div class="testimonials-grid" id="testimonials-grid"></div>
+        </div>
+      </section>
+
+      <!-- 10. Newsletter Signup -->
+      <section class="newsletter-section" aria-labelledby="newsletter-heading">
+        <div class="container">
+          <div class="newsletter-panel">
+            <div>
+              <h2 class="newsletter-panel__title" id="newsletter-heading">
+                Join the Inner Circle
+              </h2>
+              <p class="newsletter-panel__copy">
+                Private access to limited releases and quiet editorial notes.
+              </p>
+            </div>
+
+            <form class="newsletter-form" id="newsletter-form" novalidate>
+              <label for="newsletter-email" class="sr-only">Email address</label>
+              <input
+                type="email"
+                id="newsletter-email"
+                class="newsletter-form__input"
+                placeholder="Enter your email to join"
+                autocomplete="email"
+                required
+              />
+              <button type="submit" class="newsletter-form__submit">Join</button>
+            </form>
+            <p class="newsletter-feedback" id="newsletter-feedback" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- 11. Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a href="#top" class="brand-wordmark">
+              LUVRA<span class="brand-wordmark__dot" aria-hidden="true"></span>
+            </a>
+            <p class="footer-brand__copy">
+              An intimate wellness house crafted with quiet precision, body-safe materials, and
+              discreet matte packaging.
+            </p>
+            <div class="footer-brand__address">
+              <strong>Luvra Studio</strong>
+              418 Crosby Street, SoHo, New York, NY 10012
+            </div>
+          </div>
+
+          <div>
+            <h3 class="footer-col__title">About Luvra</h3>
+            <ul class="footer-links">
+              <li><a href="shop.html">Shop All</a></li>
+              <li><a href="collection.html">Collections</a></li>
+              <li><a href="collection.html?collection=arsenal">The Arsenal</a></li>
+              <li><a href="#our-promise">Our Promise</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-col__title">Legal &amp; Support</h3>
+            <ul class="footer-links">
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="shipping.html">Discreet Shipping</a></li>
+              <li><a href="returns.html">Returns &amp; Exchanges</a></li>
+              <li><a href="help.html">Help Center</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="footer-col__title">Contact Us</h3>
+            <ul class="footer-links">
+              <li><a href="mailto:concierge@luvra.com">concierge@luvra.com</a></li>
+              <li><span>+1 (212) 555-0194</span></li>
+              <li><span>Mon–Sat, 10am–7pm EST</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p class="footer-legal">
+            © 2026 Luvra Wellness LLC. All rights reserved. • 18+ Adults Only
+          </p>
+
+          <div class="footer-socials" aria-label="Social channels">
+            <a href="#top" class="btn--icon-circle" aria-label="Luvra Instagram">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" />
+              </svg>
+            </a>
+            <a href="mailto:concierge@luvra.com" class="btn--icon-circle" aria-label="Email Luvra Concierge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Shared drawers & modals are injected by src/components/drawers.js -->
+    <script defer src="src/data/catalog.js"></script>
+    <script defer src="src/state/store.js"></script>
+    <script defer src="src/components/productCard.js"></script>
+    <script defer src="src/components/drawers.js"></script>
+    <script defer src="src/components/catalogExplorer.js"></script>
+    <script defer src="src/main.js"></script>
+  </body>
+</html>
+
