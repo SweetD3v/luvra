@@ -26,7 +26,7 @@
 /* 2. Hero */
 .hero {
   position: relative;
-  min-height: clamp(500px, 72vh, 640px);
+  min-height: clamp(560px, 78vh, 720px);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -48,6 +48,10 @@
   height: 100%;
   object-fit: cover;
   object-position: right top;
+  padding-top: 14px;
+  padding-right: clamp(0px, 4vw, 56px);
+  background-color: #0b0a0c;
+  transform-origin: center top;
   animation: luvraHeroBreathe 22s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -66,7 +70,7 @@
 
 @keyframes luvraHeroBreathe {
   0% { transform: scale(1); }
-  100% { transform: scale(1.035); }
+  100% { transform: scale(1.022); }
 }
 
 @keyframes luvraHeroFog {
@@ -80,8 +84,8 @@
   inset: 0;
   z-index: 3;
   background:
-    linear-gradient(90deg, #0b0a0c 0%, rgba(11, 10, 12, 0.9) 34%, rgba(11, 10, 12, 0.25) 60%, transparent 100%),
-    linear-gradient(180deg, rgba(11, 10, 12, 0.2) 0%, transparent 16%, transparent 78%, #0b0a0c 100%);
+    linear-gradient(90deg, #0b0a0c 0%, rgba(11, 10, 12, 0.9) 34%, rgba(11, 10, 12, 0.25) 60%, transparent 91%, #0b0a0c 100%),
+    linear-gradient(180deg, #0b0a0c 0%, rgba(11, 10, 12, 0.35) 3%, transparent 14%, transparent 78%, #0b0a0c 100%);
 }
 
 .hero > .container {
@@ -561,6 +565,7 @@
 }
 
 .newsletter-form {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -570,14 +575,20 @@
 }
 
 .newsletter-form__input {
+  position: relative;
+  z-index: 1;
   flex: 1;
+  min-width: 0;
   height: 42px;
   padding-inline: 1.1rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-medium);
   background-color: var(--bg-input);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
   color: var(--text-primary);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .newsletter-form__input::placeholder {
@@ -739,23 +750,31 @@
 }
 
 @media (max-width: 600px) {
+  .hero {
+    align-items: flex-end;
+    min-height: 640px;
+  }
+
+  .hero__media {
+    height: 375px;
+    bottom: auto;
+  }
+
   .hero__img {
-    object-position: 91% top;
-    transform-origin: 80% 35%;
+    object-position: right top;
+    padding-top: 12px;
+    padding-right: 0;
+    transform-origin: center top;
   }
 
   .hero__scrim {
     background:
-      linear-gradient(180deg, rgba(11, 10, 12, 0.14) 0%, rgba(11, 10, 12, 0.82) 56%, #0b0a0c 100%);
-  }
-
-  .hero {
-    align-items: flex-end;
-    min-height: 465px;
+      linear-gradient(180deg, #0b0a0c 0%, rgba(11, 10, 12, 0.25) 4%, transparent 14%, rgba(11, 10, 12, 0.16) 56%, rgba(11, 10, 12, 0.88) 84%, #0b0a0c 100%);
   }
 
   .hero__content {
-    padding-block: 2rem;
+    padding-top: 21.5rem;
+    padding-bottom: 2.5rem;
   }
 
   .section-header {
@@ -795,7 +814,7 @@
     height: 48px;
     min-height: 48px;
     padding: 0.75rem 1.15rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   .newsletter-form__submit {

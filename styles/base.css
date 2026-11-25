@@ -8,6 +8,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  caret-color: transparent;
 }
 
 html {
@@ -26,7 +27,7 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.55;
-  overflow-x: hidden;
+  overflow-x: clip;
   min-height: 100vh;
   caret-color: transparent;
 }
@@ -98,6 +99,7 @@ textarea,
 [contenteditable='true'] {
   caret-color: var(--gold);
   cursor: text;
+  user-select: text;
 }
 
 select {
@@ -173,7 +175,7 @@ ol {
 
 [data-reveal].is-revealed {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
 
 :focus-visible {
@@ -226,14 +228,18 @@ ol {
 
 .sr-only {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 1px;
   height: 1px;
   padding: 0;
   margin: -1px;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+  pointer-events: none;
 }
 
 /* Editorial Type Helpers */

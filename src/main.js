@@ -239,8 +239,8 @@
       });
     }
 
-    // Subtle scroll-triggered section reveal
-    const sections = document.querySelectorAll('.section, .newsletter-section');
+    // Subtle scroll-triggered section reveal (keep newsletter-section free of transform layers)
+    const sections = document.querySelectorAll('.section');
     if (!sections || !sections.length) return;
 
     if (typeof global.IntersectionObserver !== 'function') {
